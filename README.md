@@ -1,203 +1,117 @@
-# 🏪 Système de Gestion d'Inventaire pour Commerçants
+# API de Gestion d'Inventaire pour Petits Commerçants
 
-## 🚀 Présentation du Projet
+## Introduction
 
-Application web de gestion d'inventaire conçue pour les petits commerçants, permettant de gérer efficacement les stocks, les produits et les utilisateurs.
+Cette API permet aux petits commerçants de gérer efficacement leurs inventaires, leurs ventes et leurs commandes en temps réel. Développée avec PHP et conteneurisée avec Docker, elle offre une solution complète pour le suivi des stocks et la gestion des commandes.
 
-## 📋 Objectifs du Projet
+## Fonctionnalités
 
-L'objectif principal est de fournir aux petits commerçants un outil simple, sécurisé et efficace pour gérer leur inventaire, leurs produits et leurs utilisateurs.
+- **Gestion des produits**: Ajout, modification, suppression et consultation des produits
+- **Suivi des stocks**: Mise à jour en temps réel des niveaux de stock
+- **Gestion des commandes**: Création, suivi et traitement des commandes
+- **Gestion des retours**: Traitement des retours de produits avec mise à jour automatique des stocks
+- **Authentification sécurisée**: Système d'authentification JWT pour sécuriser l'accès à l'API
 
-## ✨ Fonctionnalités
+## Prérequis
 
-### 🔐 Authentification et Sécurité
-- [x] Inscription des utilisateurs
-- [x] Connexion sécurisée
-- [x] Authentification JWT
-- [x] Système de refresh token
-- [x] Gestion des rôles utilisateurs
-- [ ] Authentification multi-facteurs
-- [ ] Réinitialisation de mot de passe
+- Docker et Docker Compose installés sur votre machine
+- Composer pour la gestion des dépendances PHP
 
-### 📦 Gestion des Produits
-- [x] Création de produits
-- [x] Modification des produits
-- [x] Suppression de produits
-- [x] Liste des produits
-- [ ] Catégorisation des produits
-- [ ] Gestion des variantes de produits
+## Configuration
 
-### 📊 Gestion des Stocks
-- [ ] Suivi des niveaux de stock
-- [ ] Alertes de stock bas
-- [ ] Historique des mouvements de stock
-- [ ] Gestion des approvisionnements
+Avant de démarrer le projet, configurez vos variables d'environnement en copiant le fichier `.env.sample` vers `.env` :
 
-### 🛒 Gestion des Commandes
-- [ ] Création de commandes
-- [ ] Suivi des commandes
-- [ ] Gestion des statuts de commande
-- [ ] Génération de factures
-- [ ] Historique des commandes
+```sh
+cp .env.sample .env
+```
 
-## 🔐 Système d'Authentification
+Modifiez le fichier `.env` avec vos paramètres :
 
-### Tokens
-- **Access Token** : Durée de vie courte (1 heure)
-- **Refresh Token** : Durée de vie longue (30 jours)
-- Contient les informations utilisateur (ID, rôle)
+- `DB_NAME`: Nom de votre base de données MySQL
+- `DB_USER`: Utilisateur MySQL
+- `DB_PASSWORD`: Mot de passe de l'utilisateur MySQL
+- `DB_ROOT_PASSWORD`: Mot de passe de l'utilisateur root MySQL
+- `DB_PORT`: Port pour MySQL (par défaut 3306)
+- `PHPMYADMIN_PORT`: Port pour phpMyAdmin (par défaut 8090)
 
-### Rôles
-- Rôle 1 : Utilisateur standard
-- Rôle 2 : Administrateur
-- Rôle 3 : Super Administrateur (optionnel)
+## Installation
 
-## 🛠 Architecture Technique
+```sh
+# Installation des dépendances PHP
+cd app && composer install && cd ../
 
-### Backend
-- **Langage** : PHP
-- **Authentification** : JWT
-- **Base de données** : MySQL
-- **Architecture** : MVC (Modèle-Vue-Contrôleur)
+# Démarrage des conteneurs Docker
+docker-compose up -d
+```
 
-### Sécurité
-- Hashage des mots de passe (BCrypt)
-- Validation et sanitization des données
-- Middleware de vérification des rôles
-- Protection contre les injections SQL
+## Endpoints de l'API
 
-## 🔑 Endpoints Principaux
+### Authentification
 
-### 🔐 Authentification
-- `POST /auth/register` : Inscription
-- `POST /auth/login` : Connexion
-- `POST /auth/refresh` : Renouvellement du token
-- `POST /auth/update-role` : Mise à jour du rôle utilisateur
-
-### 📦 Produits
-- `POST /products/add` : Ajouter un produit
-- `GET /products` : Lister les produits
-- `GET /products/:id` : Détails d'un produit
-- `PATCH /products/:id` : Modifier un produit
-- `DELETE /products/:id` : Supprimer un produit
-
-### 🛒 Commandes (Futures)
-- `POST /orders/create` : Créer une commande
-- `GET /orders` : Lister les commandes
-- `GET /orders/:id` : Détails d'une commande
-- `PATCH /orders/:id` : Modifier le statut d'une commande
-- `DELETE /orders/:id` : Annuler une commande
-
-## 📦 Prérequis Techniques
-
-### Serveur
-- PHP 8.0+
-- MySQL 5.7+
-- Extension PDO
-- Composer
-
-### Variables d'Environnement
-- `DB_HOST`
-- `DB_NAME`
-- `DB_USER`
-- `DB_PASSWORD`
-- `JWT_ACCESS_SECRET`
-- `JWT_REFRESH_SECRET`
-- `PASSWORD_SALT`
-
-## 📊 Modèle de Données
-
-### Utilisateurs
-| Champ | Type | Description |
-|-------|------|-------------|
-| id | INT | Identifiant unique |
-| email | VARCHAR | Adresse email |
-| password | VARCHAR | Mot de passe hashé |
-| role | INT | Rôle utilisateur |
-| created_at | TIMESTAMP | Date de création |
-| updated_at | TIMESTAMP | Date de mise à jour |
+- `POST /auth/register` - Inscription d'un nouvel utilisateur
+- `POST /auth/login` - Connexion et obtention d'un token JWT
 
 ### Produits
-| Champ | Type | Description |
-|-------|------|-------------|
-| id | INT | Identifiant unique |
-| name | VARCHAR | Nom du produit |
-| quantity | INT | Quantité en stock |
-| price | DECIMAL | Prix |
-| category | VARCHAR | Catégorie |
-| code_product | VARCHAR | Code produit |
-| created_at | TIMESTAMP | Date de création |
-| updated_at | TIMESTAMP | Date de mise à jour |
 
-## 🚧 Limitations Connues
+- `GET /products` - Liste de tous les produits
+- `GET /products/:id` - Détails d'un produit spécifique
+- `POST /products` - Création d'un nouveau produit
+- `PUT /products/:id` - Mise à jour complète d'un produit
+- `DELETE /products/:id` - Suppression d'un produit
+- `PATCH /products/:id/stock` - Mise à jour du stock d'un produit
 
-- Durée de vie limitée des tokens
-- Besoin de refresh manuel des tokens après changement de rôle
-- Gestion manuelle des permissions
+### Commandes
 
-## 🔜 Évolutions Futures
+- `GET /orders` - Liste de toutes les commandes
+- `GET /orders/:id` - Détails d'une commande spécifique
+- `POST /orders` - Création d'une nouvelle commande
+- `PATCH /orders/:id/status` - Mise à jour du statut d'une commande
+- `POST /orders/:id/return` - Traitement d'un retour de commande
 
-### Fonctionnalités
-- Système de gestion des stocks avancé
-- Module de commandes complet
-- Gestion des approvisionnements
-- Rapports et statistiques
-- Interface d'administration détaillée
+## Exemples d'utilisation
 
-### Améliorations Techniques
-- Système de cache pour les tokens
-- Gestion fine des permissions
-- Logs d'audit complets
-- Intégration de notifications
-- Tests unitaires et d'intégration
-- Documentation API complète (Swagger/OpenAPI)
+### Création d'un produit
 
-## 📖 Guide d'Installation
-
-### Cloner le projet
-```
-git clone https://github.com/Logipek/shop-backend.git
+```json
+POST /products
+{
+  "name": "T-shirt",
+  "description": "T-shirt en coton bio",
+  "price": 19.99,
+  "stock_quantity": 100
+}
 ```
 
-### Installer les dépendances
+### Création d'une commande
+
+```json
+POST /orders
+{
+  "customer_name": "Jean Dupont",
+  "items": [
+    {
+      "product_id": 1,
+      "quantity": 2
+    },
+    {
+      "product_id": 3,
+      "quantity": 1
+    }
+  ]
+}
 ```
-composer install
+
+## Accès aux services
+
+- API: [http://localhost](http://localhost)
+- phpMyAdmin: [http://localhost:8090](http://localhost:8090)
+
+## Arrêt du projet
+
+```sh
+docker-compose down
 ```
 
-### Configurer les variables d'environnement
-```
-cp .env.example .env
-```
-### Éditer .env avec vos configurations
+## Licence
 
-### Initialiser la base de données
-```
-php bin/migrate.php
-```
-### Lancer le serveur
-```
-php -S localhost:8000
-```
-## 🤝 Contribution
-
-1. Forker le projet
-2. Créer une branche de fonctionnalité (`git checkout -b feature/AmeliorationX`)
-3. Commiter vos modifications (`git commit -am 'Ajout fonctionnalité X'`)
-4. Pusher la branche (`git push origin feature/AmeliorationX`)
-5. Créer une Pull Request
-
-## 🐛 Rapport de Bugs
-
-Pour rapporter un bug, merci d'ouvrir une issue sur le dépôt GitHub avec :
-- Description détaillée
-- Étapes de reproduction
-- Version du logiciel
-- Captures d'écran (si possible)
-
-## 📄 Licence
-
-[Licence MIT]
-
----
-
-**Note technique :** Projet de gestion d'inventaire modulaire, sécurisé et évolutif.
+Ce projet est sous licence MIT.
